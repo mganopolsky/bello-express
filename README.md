@@ -2,6 +2,14 @@
 
 This is a Node.js application written in TypeScript that demonstrates the use of a producer-consumer pattern.
 
+This app has defaults set for the `producer timer` (2000), `consumer timer` (1000), and the `timeout period` (15000), all in microseconds; however, these parameters can be passed into the app as such: 
+
+`npm start producer_timer consumer_time timeout`
+
+so, if we want to increase the default settings by 1, the input would be:
+
+`npm start 2001 1001 15001`
+
 ## Project Structure
 
 - `src/`: Contains the source files.
@@ -41,4 +49,4 @@ cd bello-express
 `npm run test`
 
 6. Run the app 
-`npm run start`
+`npm run start 2001 1001 15001`

@@ -2,18 +2,18 @@ import { TransactionBuffer } from './buffer';
 import { Consumer } from './consumer';
 import { Producer } from './producer';
 
-function main() {
+function main(producerIntervalInput: number = 2000, consumerIntervalInput: number = 1000, timeout: number = 15000) {
   try {
     const consumer = new Consumer();
 
     const producerInterval = setInterval(() => {
       TransactionBuffer.addTransaction(Producer.produce());
     //}, Math.floor(Math.random() * 3) + 1);
-    }, 1000);
+    }, producerIntervalInput);
 
     const consumerInterval = setInterval(() => {
       consumer.consume();
-    }, 1000);
+    }, consumerIntervalInput);
 
     // If we want to limit the time of execution, we can use setTimeout as below
     // If left uncommented, the program will run forever
@@ -23,7 +23,7 @@ function main() {
       clearInterval(consumerInterval);
 
       consumeTillBufferEmpty(consumer);
-    }, 10000);
+    }, timeout);
 
   } catch (error) {
     console.error("Error occurred: ", error);
@@ -38,4 +38,9 @@ function consumeTillBufferEmpty(consumer: Consumer) {
   }
 }
 
-main();
+// Get command line arguments
+const producerIntervalArg = Number(process.argv[2]);
+const consumerIntervalArg = Number(process.argv[3]);
+const timeoutArg = Number(process.argv[4]);
+
+main(producerIntervalArg, consumerIntervalArg, timeoutArg);
