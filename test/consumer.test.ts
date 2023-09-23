@@ -6,8 +6,9 @@ import { TransactionBuffer } from "../src/buffer";
 
 describe('Consumer', () => {
   test('should consume transaction from fifoQueue', () => {
-    const transaction = new Transaction(products[0], 5);
-    const consumer = new Consumer();
+    const timeStamp = Date.now();
+    const consumer = new Consumer(timeStamp, timeStamp + 30 * 60 * 1000);
+    const transaction = new Transaction(products[0], 5, timeStamp + 5*60*1000);
     TransactionBuffer.addTransaction(transaction);
     consumer.consume();
     expect(consumer.totalTransactions).toBe(1);
@@ -16,18 +17,20 @@ describe('Consumer', () => {
   });
 
   test('should not fail when no transaction in fifoQueue', () => {
-    const consumer = new Consumer();
+    const timeStamp = Date.now();
+    const consumer = new Consumer(timeStamp, timeStamp + 30 * 60 * 1000);
     consumer.consume();
     expect(consumer.totalTransactions).toBe(0);
     expect(consumer.totalSales).toBe(0);
   });
 
   test('should accumulate total sales per product correctly', () => {
-    const consumer = new Consumer();
+    const timeStamp = Date.now();
+    const consumer = new Consumer(timeStamp, timeStamp + 30 * 60 * 1000);
     const transactions = [
-      new Transaction(products[0], 5),
-      new Transaction(products[0], 3),
-      new Transaction(products[0], 2),
+      new Transaction(products[0], 5, timeStamp + 6*60*1000),
+      new Transaction(products[0], 3 , timeStamp + 7*60*1000),
+      new Transaction(products[0], 2, timeStamp + 11*60*1000),
     ];
     transactions.forEach(transaction => TransactionBuffer.addTransaction(transaction));
     transactions.forEach(_ => consumer.consume());
@@ -35,6 +38,11 @@ describe('Consumer', () => {
     expect(consumer.totalSales).toBe(10);
     expect(consumer.totalSalesPerProduct.get(products[0])).toBe(10);
     // 0-minute time-based metrics should be empty
-    expect(consumer.timeBasedMetrics.get(0)).toBe(0);    
+
+    let categoryTimestamp = new Date(timeStamp);
+    categoryTimestamp.setMinutes(5);
+    categoryTimestamp.setSeconds(0);
+    categoryTimestamp.setMilliseconds(0);
+    expect(consumer.categories[categoryTimestamp.getMinutes()]).to.not.toBeUndefined
   });
 });

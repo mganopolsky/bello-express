@@ -49,7 +49,7 @@ export class Consumer {
         categoryTimestamp.setMilliseconds(0);
 
         // Convert categoryTimestamp to string for use as object key
-        let category = categoryTimestamp.toISOString();
+        let category = categoryTimestamp.getMinutes().toString();
 
         // Create category if it doesn't exist
         if (!this.categories[category]) {
