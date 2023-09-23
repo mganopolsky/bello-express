@@ -34,5 +34,7 @@ describe('Consumer', () => {
     expect(consumer.totalTransactions).toBe(3);
     expect(consumer.totalSales).toBe(10);
     expect(consumer.totalSalesPerProduct.get(products[0])).toBe(10);
+    // 0-minute time-based metrics should be empty
+    expect(consumer.timeBasedMetrics.get(0)).toBe(0);    
   });
 });

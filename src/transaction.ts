@@ -20,12 +20,14 @@ export class Transaction {
     id: string;
     product: productType;
     amount: number;
+    timestamp: number;
 
-    constructor(product: productType, amount: number) {
+    constructor(product: productType, amount: number, timestamp: number) {
         //zod parse the number to be bet 1-10;
         this.id = uuidv4();
         this.product = product;
         validateInteger(amount);
         this.amount = amount; // provided its parsed properly
+        this.timestamp = timestamp;
     }
 }

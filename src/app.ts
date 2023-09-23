@@ -3,11 +3,14 @@ import { Consumer } from './consumer';
 import { Producer } from './producer';
 
 function main(producerIntervalInput: number = 2000, consumerIntervalInput: number = 1000, timeout: number = 15000) {
-  try {
-    const consumer = new Consumer();
+  try {    
+    const startTimeStamp = Date.now();
+    //30 minutes later
+    const endTimeStamp = startTimeStamp + 30 * 60 * 1000;
+    const consumer = new Consumer(startTimeStamp, endTimeStamp);
 
     const producerInterval = setInterval(() => {
-      TransactionBuffer.addTransaction(Producer.produce());
+      TransactionBuffer.addTransaction(Producer.produce(startTimeStamp, endTimeStamp));
     //}, Math.floor(Math.random() * 3) + 1);
     }, producerIntervalInput);
 
